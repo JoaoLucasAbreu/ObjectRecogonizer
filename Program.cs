@@ -56,7 +56,7 @@ namespace Projeto {
 						foreach (var forma in formas) 
 						{
 							//Console.WriteLine($"Quadro_{1}: Altura={forma.Altura} Largura={forma.Largura} Area={forma.Largura * forma.Altura}");
-							if (forma.Largura * forma.Altura < 8500) 
+							if (forma.Largura * forma.Altura > 5500 && forma.Largura * forma.Altura < 8500) 
 							{
 								temBola = true;
 								if (ultimoLocalBola.x != null && ultimoLocalBola.x != null)
