@@ -3,8 +3,8 @@
 namespace Projeto {
 
 	class Bola {
-		public int? x { get; set; }
-    	public int? y { get; set; }
+		public int x { get; set; }
+    	public int y { get; set; }
 	}
 
 	class Program {
@@ -18,10 +18,7 @@ namespace Projeto {
 			input = Console.ReadLine();
 			int.TryParse(input, out int quadros);
 
-			Bola ultimoLocalBola = new Bola {
-				x = null,
-				y = null,
-			};
+			Bola ultimoLocalBola = null;
 
 			List<double> velocidades = new List<double>();
 			int? primeiroQuadroMov = null;
@@ -56,31 +53,33 @@ namespace Projeto {
 						foreach (var forma in formas) 
 						{
 							//Console.WriteLine($"Quadro_{1}: Altura={forma.Altura} Largura={forma.Largura} Area={forma.Largura * forma.Altura}");
-							if (forma.Largura * forma.Altura > 5500 && forma.Largura * forma.Altura < 8500) 
+							if (forma.Largura * forma.Altura > 5500 && forma.Largura * forma.Altura < 8500 && forma.CentroX > bitmapSaida.Width/2) 
 							{
 								temBola = true;
-								if (ultimoLocalBola.x != null && ultimoLocalBola.x != null)
+								if (ultimoLocalBola != null)
 								{
 									if ((ultimoLocalBola.x != forma.CentroX || ultimoLocalBola.y != forma.CentroY) && primeiroQuadroMov == null)
 										primeiroQuadroMov = q;
 
-									if (q > 0)
-									{
-										var cm = forma.Largura / 30;
-										var deltax = (double)ultimoLocalBola.x - forma.CentroX;
-										var deltay = (double)ultimoLocalBola.y - forma.CentroY;
-										var distancia = Math.Sqrt(deltax * deltax + deltay * deltay) * cm;
-										var velocidade = distancia/0.02;
+									var cmPorPX =(double)30 / forma.Largura;
+									var deltax = (double)ultimoLocalBola.x - forma.CentroX;
+									var deltay = (double)ultimoLocalBola.y - forma.CentroY;
+									var distancia = Math.Sqrt(deltax * deltax + deltay * deltay) * cmPorPX;
+									var velocidade = distancia/0.02;
 
-										Console.WriteLine($"{q - 1} ==> {q}: {velocidade:0.00}cm/s");
+									Console.WriteLine($"{q - 1} ==> {q}: {velocidade:0.00}cm/s");
 
-										if (velocidade != 0)
-											velocidades.Add(velocidade);
-									}
+									if (velocidade != 0)
+										velocidades.Add(velocidade);
+
+									ultimoLocalBola.x = forma.CentroX;
+									ultimoLocalBola.y = forma.CentroY;
+								} else {
+									ultimoLocalBola = new Bola {
+										x = forma.CentroX,
+										y = forma.CentroY
+									};
 								}
-
-								ultimoLocalBola.x = forma.CentroX;
-								ultimoLocalBola.y = forma.CentroY;
 							}	
 						}
 
@@ -105,7 +104,7 @@ namespace Projeto {
 				vm = vm + v;
 			}
 
-			Console.WriteLine($"Velocidade da bola: {vm / velocidades.Count():0.00}cm/s");
+			Console.WriteLine($"Velocidade média da bola: {vm / velocidades.Count():0.00}cm/s");
 		}
 
 		static unsafe void Erodir(byte* imagem, int largura, int altura, int tamanhoJanela, byte* temp) {
